@@ -19,7 +19,9 @@ export default {
   created() {
     this.$store.dispatch('fetchEvents')
   },
-  computed: mapState(['events']),
+  computed: {
+    ...mapState(['events'])
+  }
 }
 </script>
 
