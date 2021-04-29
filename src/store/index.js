@@ -16,15 +16,21 @@ export default new Vuex.Store({
       'food',
       'community'
     ],
-    events: []
+    events: [], 
+    event: {}
+
   },
   mutations: {
     ADD_EVENT(state, event) {
       state.events.push(event)
     },
+    // The first argument 'state' is called "context object", its serves to have access to the state in this case
     SET_EVENTS(state, events) {
       state.events = events
     },
+    SET_EVENT(state,event) {
+      state.event = event
+    }
 
   },
   actions: {
@@ -41,8 +47,27 @@ export default new Vuex.Store({
         .catch(error => {
           console.log(error)
         })
+    },
+    fetchEvent({ commit, getters }, id) {
+      var event = getters.getEventById(id)
+
+      if (event) {
+        commit('SET_EVENT', event)
+      } 
+      else {
+        EventService.getEvent(id)
+        .then(response => {
+          commit('SET_EVENT', response.data)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+      }
     }
   },
   getters: {
+    getEventById : state => id => {
+      return state.events.find(event => event.id === id)
+    }
   }
 })
