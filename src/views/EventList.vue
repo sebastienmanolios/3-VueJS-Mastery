@@ -1,7 +1,9 @@
 <template>
   <div class="events">
+    <!-- the first user is the module name, the second one is the state inside -->
+    <h1>Events for {{ user.user.name }}</h1>
       <EventCard 
-        v-for="event in events" :key=event.id
+        v-for="event in event.events" :key=event.id
         :event="event"
       />
   </div>
@@ -17,10 +19,11 @@ export default {
     EventCard
   },
   created() {
-    this.$store.dispatch('fetchEvents')
+    this.$store.dispatch('event/fetchEvents')
   },
   computed: {
-    ...mapState(['events'])
+    // the mapState is now referering the module name event
+    ...mapState(['event', 'user'])
   }
 }
 </script>
