@@ -35,21 +35,41 @@ export const mutations = {
 }
 
 export const actions = {
-  createEvent({ commit }, event) {
-    return EventService.postEvent(event).then(() => {
-      commit('ADD_EVENT', event)
-    })
+  createEvent({ commit, dispatch }, event) {
+    return EventService.postEvent(event)
+      .then(() => {
+        commit('ADD_EVENT', event)
+        const notification = {
+          type: 'success',
+          message: 'Your event has been created!'
+        }
+        dispatch('notification/add', notification, { root: true })
+      })
+      .catch(error => {
+        const notification = {
+          type: 'error',
+          message: 'There was a problem creating your event: ' + error.message
+        }
+        dispatch('notification/add', notification, { root: true })
+        // we need to propagate this error to our component
+        throw error
+      })
   },
-  fetchEvents({ commit }) {
+  fetchEvents({ commit, dispatch }) {
     EventService.getEvents()
       .then(response => {
         commit('SET_EVENTS', response.data)
       })
       .catch(error => {
-        console.log(error)
+        const notification = {
+          type: 'error',
+          message: 'There was a problem fetching events: ' + error.message
+        }
+        // root:true allows the dispatcher to go to the root state ($store), find the notification module & run the add action
+        dispatch('notification/add', notification, { root: true})
       })
   },
-  fetchEvent({ commit, getters }, id) {
+  fetchEvent({ commit, getters, dispatch }, id) {
     var event = getters.getEventById(id)
 
     if (event) {
@@ -61,7 +81,12 @@ export const actions = {
         commit('SET_EVENT', response.data)
       })
       .catch(error => {
-        console.log(error)
+        const notification = {
+          type: 'error',
+          message: 'There was a problem fetching one event: ' + error.message
+        }
+        // root:true allows the dispatcher to go to the root state ($store), find the notification module & run the add action
+        dispatch('notification/add', notification, { root: true})
       })
     }
   }

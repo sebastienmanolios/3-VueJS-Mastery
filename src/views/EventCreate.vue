@@ -66,9 +66,8 @@ import Datepicker from 'vuejs-datepicker'
           })
           this.event = this.createFreshEventObject()
         })
-        .catch(() => {
-          console.log('There is a problem')
-        })
+        // We don't want to clear the form or to go the EventDetails page
+        .catch(() => {})
       },
       createFreshEventObject() {
         const user = this.$store.state.user.user
