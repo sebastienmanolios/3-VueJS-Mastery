@@ -34,7 +34,7 @@ export default new Vuex.Store({
       })
     },
     fetchEvents({ commit }) {
-      return EventService.getEvents()
+      EventService.getEvents()
         .then(response => {
           commit('SET_EVENTS', response.data)
         })
