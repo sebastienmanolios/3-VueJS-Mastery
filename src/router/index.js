@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import EventList from '../views/EventList.vue'
 import EventCreate from '../views/EventCreate.vue'
 import EventDetails from '../views/EventDetails.vue'
+import store from '@/store'
 import NProgress from 'nprogress'
 
 Vue.use(Router)
@@ -25,7 +26,15 @@ const router = new Router({
       path: '/event/:id',
       name: 'EventDetails',
       props: true,
-      component: EventDetails
+      component: EventDetails,
+      beforeEnter(routeTo, routeFrom, next) {
+        store
+          .dispatch('event/fetchEvent', routeTo.params.id)
+          .then(event => {
+            routeTo.params.event = event
+            next()
+          })
+      } 
     }
   ]
 })

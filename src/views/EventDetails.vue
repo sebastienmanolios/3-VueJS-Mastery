@@ -9,16 +9,12 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 export default {
-  props: ['id'],
-  created() {
-    this.$store.dispatch('event/fetchEvent', this.id)
-  },
-  // In doing modules we don't have to change event to event.event everywhere, we just have
-  // to redefine the mapState as an object
-  computed : mapState({
-    event : state => state.event.event
-  })
+  props: {
+    event: {
+      type: Object,
+      required: true
+    }
+  }
 }
 </script>
