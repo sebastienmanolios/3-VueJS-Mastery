@@ -3,6 +3,10 @@ import Router from 'vue-router'
 import EventList from '../views/EventList.vue'
 import EventCreate from '../views/EventCreate.vue'
 import EventDetails from '../views/EventDetails.vue'
+import NotFound from '../views/NotFound.vue'
+import NetworkIssue from '../views/NetworkIssue.vue'
+
+
 import store from '@/store'
 import NProgress from 'nprogress'
 
@@ -25,8 +29,8 @@ const router = new Router({
     {
       path: '/event/:id',
       name: 'EventDetails',
-      props: true,
       component: EventDetails,
+      props: true,
       beforeEnter(routeTo, routeFrom, next) {
         store
           .dispatch('event/fetchEvent', routeTo.params.id)
@@ -34,7 +38,30 @@ const router = new Router({
             routeTo.params.event = event
             next()
           })
-      } 
+          .catch(error => {
+            if (error.response && error.response.status == 404) {
+              next({ name: '404', params: { resource: 'event' } })
+            } else {
+              next({ name: 'NetworkIssue' })
+            }
+          })
+      }
+    },
+    {
+      path: '/404',
+      name: '404',
+      component: NotFound,
+      props: true
+    },
+    {
+      path: '/NetworkIssue',
+      name: 'NetworkIssue',
+      component: NetworkIssue
+    },
+    // Will catch all navigation that doesnot match
+    {
+      path: '*',
+      redirect: { name: '404', params: { resource: 'page' } }
     }
   ]
 })

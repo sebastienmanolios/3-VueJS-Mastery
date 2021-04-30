@@ -69,7 +69,7 @@ export const actions = {
         dispatch('notification/add', notification, { root: true})
       })
   },
-  fetchEvent({ commit, getters, dispatch }, id) {
+  fetchEvent({ commit, getters }, id) {
     var event = getters.getEventById(id)
 
     if (event) {
@@ -81,14 +81,6 @@ export const actions = {
       .then(response => {
         commit('SET_EVENT', response.data)
         return response.data
-      })
-      .catch(error => {
-        const notification = {
-          type: 'error',
-          message: 'There was a problem fetching one event: ' + error.message
-        }
-        // root:true allows the dispatcher to go to the root state ($store), find the notification module & run the add action
-        dispatch('notification/add', notification, { root: true})
       })
     }
   }
